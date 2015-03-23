@@ -26,9 +26,9 @@ The UI component only has one chart to represent a from and to currency, but cou
 
 Process Flow
 -----------------
-Incoming trade message processed by TradeController.consumeTrade -> Trade.processMessage -> Returns result and sends currencytrade event to TradeActor
-TradeActor -> Sends currency trades to any registered watchers
-TrendController -> TrendActor -> TradeActor registers watcher to be able to stream trade events to the WebSocket
+1. Incoming trade message processed by TradeController.consumeTrade -> Trade.processMessage -> Returns result and sends currencytrade event to TradeActor
+2. TradeActor -> Sends currency trades to any registered watchers
+3. TrendController -> TrendActor -> TradeActor registers watcher to be able to stream trade events to the WebSocket
 
 Build
 ---------------
@@ -39,13 +39,14 @@ Requires JDK6 or higher with associated env vars set.
 Testing
 -----------------
 Used the following curl for single tests:
-curl \
+```curl \
   --header "Content-type: application/json" \
   --request POST \
   --data '{"userId": "134256", "currencyFrom": "EUR", "currencyTo": "GBP",
 "amountSell": 1000, "amountBuy": 747.10, "rate": 0.7471, "timePlaced" :
 "24-JAN-15 10:27:44", "originatingCountry" : "FR"}' \
   http://localhost:9000/consumeTrade
+```
 
 For sequential infinite variable trades to assist with the trend graphing used a bash script called sequentialLoadGenerator.sh
 
