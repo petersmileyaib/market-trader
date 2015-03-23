@@ -39,7 +39,8 @@ Requires JDK6 or higher with associated env vars set.
 Testing
 -----------------
 Used the following curl for single tests:
-```curl \
+```
+curl \
   --header "Content-type: application/json" \
   --request POST \
   --data '{"userId": "134256", "currencyFrom": "EUR", "currencyTo": "GBP",
