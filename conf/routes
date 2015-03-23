@@ -1,0 +1,14 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Graph trends of currency trades
+GET     /                    		controllers.TrendController.index
+GET     /trendsWebSocket           	controllers.TrendController.ws
+
+# Consume the currency trade info
+POST 	/consumeTrade				controllers.TradeController.consumeTrade
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+

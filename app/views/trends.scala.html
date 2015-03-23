@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+@import play.mvc.Http.Context.Implicit._
+
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Trends of currency pairs streamed through WebSocket</title>
+	<link rel='stylesheet' href='@routes.Assets.at("lib/bootstrap/css/bootstrap.min.css")'>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/smoothie.js")"></script>
+	<script type="text/javascript">
+		window.onload = function() {
+			var log = document.getElementById("log");
+			var timeSeries = new TimeSeries();
+			var smoothieChart = new SmoothieChart({
+				minValue: 0.0,
+				maxValue: 32767.0,
+				grid: {
+					strokeStyle: 'rgb(125, 0, 0)',
+					fillStyle: 'rgb(60, 0, 0)',
+					lineWidth: 1,
+					millisPerLine: 1000,
+					verticalSections: 4
+				}
+			});
+			smoothieChart.addTimeSeries(timeSeries, {
+				strokeStyle:'rgb(0, 255, 0)',
+				fillStyle:'rgba(0, 255, 0, 0.4)',
+				lineWidth:3
+			});
+			smoothieChart.streamTo(document.getElementById("mycanvas"), 1000);
+			if (window["WebSocket"]) {
+				var conn = new WebSocket("@routes.TrendController.ws.webSocketURL(request)");
+				conn.onmessage = function(evt) {
+					log.innerHTML = evt.data;
+					
+					var currencyPairRate = JSON.parse(evt.data);
+					timeSeries.append(new Date().getTime(), parseFloat(currencyPairRate.rate));
+				};
+				conn.onclose = function(evt) {
+					log.innerHTML = "Connection closed";
+				};
+			} else {
+				log.innerHTML = "Browser does not support WebSockets";
+			}
+		};
+	</script>
+</head>
+
+<body>
+	<div id="log" style="font-family:Courier,monospace"></div>
+	<canvas id="mycanvas" width="600" height="320"></canvas>
+</body>
+
+</html>
